@@ -1,0 +1,6 @@
+{
+	"C++": {
+		"cmd": "g++ test.cpp 2> errors.log; ./a.out < input.txt > output.txt",
+		"ext": "cpp"
+	}
+}
