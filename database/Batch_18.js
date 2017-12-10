@@ -13,5 +13,5 @@ var Batch_18 = module.exports =  mongoose.model('Batch_18', Batch_18_Schema, 'Ba
 
 module.exports.getCourseByUsernameAfterLoginSuccess = function(studentusername) 
 {
-	return Batch_18.findOne({ username: studentusername.username});
+	return Batch_18.findOne({ username: studentusername.username}); 		// FMLS
 }
