@@ -115,5 +115,12 @@ export default function(app, passport)
 	})
 
 
+	router.post('/signupI', async ctx => 
+	{
+		instructors_credentials.addInstructor(ctx.request.body)
+		ctx.body = { bleh: 'bleh' }
+	})
+
+
 	return router
 }

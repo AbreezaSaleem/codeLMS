@@ -17,6 +17,10 @@ import CoursePage from './CoursePage'
 import CoursePageI from './instructor_side/CoursePage'
 import Roster from './instructor_side/Roster'
 import SignUp from './shared/SignUp1'
+import Console from './ConsolePage2'
+import Thumbnail from './ThumbNail'
+import R from './instructor_side/AssignmentEdit'
+
 
 
 class Routes extends React.Component
@@ -27,10 +31,11 @@ class Routes extends React.Component
 		return(
 			<Switch>
 				<Route exact path = '/' component = { Dashboard }/>
+				<Route exact path = '/signup' component = { SignUp } />
 				<Route exact path = '/loginS' component = { Login } />
 				<Route exact path = '/loginS/student' component = {Tiles} />
 				<Route exact path = '/loginS/student/course' component= {CoursePage}/>
-				<Route exact path = '/loginS/student/course/console' component= {CodeEditor}/>
+				<Route exact path = '/loginS/student/course/console' component= {Console}/>
 				<Route exact path = '/loginI' component = { LoginI } />
 				<Route exact path = '/loginI/instructor' component = { TilesI } />
 				<Route exact path = '/loginI/instructor/course' component = { CoursePageI } />

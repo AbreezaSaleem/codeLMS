@@ -42,10 +42,6 @@ app.listen(8080, function()
 	console.log('listening on 8080')
 }) 
 
-basicRouter.post('/', async ctx =>
-{
-	instructors_credentials.addInstructor(ctx.request.body)
-})
 
 queue.create('pls', 
 {

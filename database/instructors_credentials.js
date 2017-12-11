@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'
+import gitlabAC from '../gitlab/account_creator'
 
 const saltRounds = 8
 
@@ -24,6 +25,7 @@ module.exports.addInstructor = function(data)
 			newUser.save(function (err, newUser) 
 			{
 				if (err) return console.error(err);
+				// here you register on gitlab as well
 			})
 		})
 	})

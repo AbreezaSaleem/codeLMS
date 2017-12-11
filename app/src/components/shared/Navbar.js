@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 export default class Navbar extends React.Component // how will the session terminate when the user logs out?
 {
@@ -13,6 +14,9 @@ export default class Navbar extends React.Component // how will the session term
 				</a>
 				<div class="navbar-collapse collapse navbar-brand" id="navbar4">
 					<ul class = 'navbar-nav pull-right'>
+						<li class="nav-item">
+							<Link to = '/signup' class = 'nav-link'> <span class = 'src-only'>Sign up</span> </Link>
+						</li>
 						<li class="nav-item">
 							<a class = 'nav-link' href="/loginS/student"> <span class = 'src-only'>Profile</span> </a>
 						</li>
