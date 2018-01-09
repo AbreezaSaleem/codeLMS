@@ -1,0 +1,4 @@
+  File "test.py", line 1
+    import sys
+    ^
+IndentationError: unexpected indent
