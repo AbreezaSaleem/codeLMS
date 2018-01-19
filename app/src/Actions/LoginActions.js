@@ -1,11 +1,16 @@
 import axios from 'axios'
-
+import dispatcher from '../dispatcher'
 
 // actions
 export const USER_LOGGED_IN = 'USER_LOGGED_IN'
 
+export const ACTIVE_USERNAME = 'ACTIVE_USERNAME'
 
 // action creators
+export function activeUsername(username)
+{
+	return {type: ACTIVE_USERNAME, username}
+}
 
 export const isLoading = bool =>
 ({

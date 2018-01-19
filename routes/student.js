@@ -2,15 +2,23 @@ import Router from 'koa-router2'
 import passport from 'koa-passport'
 import ls from 'passport-local'
 import child_process from 'child_process'
+import fs from 'fs'
 
 import semester_courses from '../database/semester_courses'
 import Batch_18 from '../database/Batch_18'
 import students_credentials from '../database/students_credentials'
 
-export default function(app, passport, queue)
+var gitlabConfig = JSON.parse(fs.readFileSync(__dirname + '/../gitlab/gitlab_config.js', 'utf8'));
+
+export default function(io, app, passport, queue)
 {
 	const LocalStrategy = ls.Strategy
 	const router = new Router({prefix : '/loginS'})
+
+	var error_username = ''
+	var error_password = ''
+
+	let langs = JSON.parse(fs.readFileSync(__dirname + "/../sandbox/langs.json"), 'utf8')
 
 	queue.create('email', 
 	{
@@ -36,21 +44,28 @@ export default function(app, passport, queue)
 
 	passport.use('student', new LocalStrategy(async (username, password, done) => 
 	{
-		var pls = 'students_credentials'
-		let user = await students_credentials.findUserbyUsername(username)  
+		let user = await students_credentials.findUserbyUsername(username) 
 		try {
 			if (user)
 			{
-				let found_password = await students_credentials.comparePassword(password)
-				if (found_password) 
+				/// SO IF YOU GET COURSES HERE YOU CAN JUST SAVE THEM AND SEND THEM TO POST. 
+				/// BUT SERVER IS ONE AND IT CANT KEEP A LIST OF COURSES OF SO MANY INSTRUCTORS AT THE SAME TIME. FIX???
+				/// SEND IT TO SUCCESS REDIRECT SOMEHOW???
+				//let found_password = await instructors_credentials.comparePassword(user.password, password) 
+				let found_password = ''
+				students_credentials.comparePassword(password, user.password, function(err, isMatch) // BCRYPT IMPLEMENTATION
 				{
-					done(null, user)
-				}
-				else
-				{
-					error_password = 'Invalid password.'
-					done(null, false)
-				}
+					if(err) throw err;
+					if(isMatch)
+					{
+						found_password = 'found'
+						return done(null, user);
+					} else 
+					{
+						error_password = 'Invalid password.'
+						return done(null, false)
+					}
+				})
 			}
 			else
 			{
@@ -104,24 +119,107 @@ export default function(app, passport, queue)
 		ctx.body = { CourseInfo: CourseInfo[0]}
 	})
 
-	router.post('/loginS/student/course/console', async ctx =>
+	
+	
+	io.on('connection', function(socket)
 	{
-		console.log('code issssss')
-		console.log(ctx.request.body)
-		ctx.body = { effoff: 'effoff' }
+		console.log('connection made')
+		socket.on('CodeToRun',(code)=>
+		{
+			console.log('code issssss')
+			console.log(code.userCode)
+			fs.writeFile("repository/test.py", code.userCode, function(err) 
+			{
+				if(err) return console.log(err);
+				console.log("The file was saved!");	
+			}) 
+			// time to run the code! ^_^
+			var params = 
+			[
+				langs["python"]["cmd"],
+				langs["python"]["ext"]
+			]
+			var runScript = child_process.execFile(__dirname + '/../codeRunner/runWebCode.sh', params);
+			runScript.on('close', bleh =>
+			{
+				console.log('done')
+				fs.readFile(__dirname + "/../repository/output.txt", "utf8", (err, data) => 
+				{
+					if (err)
+						throw err;
+					fs.readFile(__dirname + "/../repository/errors.log", "utf8", (err1, data1) => 
+					{
+						if (err1)
+							throw err1;
+						console.log("output is")
+						console.log(data)
+						console.log(data1)
+						socket.emit('returnOutput', { output: data, errors: data1 })
+					})
+				});
+			});
+
+			runScript.stderr.on('data', function(data)
+			{
+				console.log(data);
+				// triggerErrorStuff(); 
+			});
+			//ctx.body = { output: 'effoff' }
+			
+		})
+
+		socket.on('uploadCode', data =>
+		{
+			console.log('upload code')
+			console.log(data)
+
+			let dir = 'temp' // will store the code here temporarily
+
+			let params = 
+			[
+				data.name,
+				data.dirname,
+				dir,
+				gitlabConfig["gitlab-root"]["gitServer"]
+			]
+			console.log(params)
+			// clone the repository
+			var runScriptDownload = child_process.execFile(__dirname + '/../gitlab/download_code.sh', params);
+			runScriptDownload.on('close', bleh =>
+			{
+				console.log('done downloading')
+				// now modify the file
+				fs.writeFile('gitlab/temp/' + data.dirname + '/test.py', data.code, function(err) 
+				{
+					if(err) return console.log(err);
+					console.log("The file was saved!");	
+					// now push new changes
+					let dir2 = 'temp/' + data.dirname
+					let params2 =
+					[
+						data.name,
+						dir2
+					]
+					console.log(params2)
+					var runScriptUpload = child_process.execFile(__dirname + '/../gitlab/git_push.sh', params2);
+					runScriptUpload.on('close', bleh =>
+					{
+						console.log('done uploading')
+					})
+				})
+			})
+
+
+		})
 	})
 
-	function executeCode(scriptParams, callback) 
+
+	router.post('/signupS', async ctx => 
 	{
-		const child = childProcess.execFile(
-			scriptParams.src,
-			scriptParams.params,
-			{ cwd: scriptParams.cwd },
-			(err, stdout, stderr) => {
-				if (err) callback(true);
-				callback(false);
-			});
-	}
+		students_credentials.addStudent(ctx.request.body)
+		ctx.body = { bleh: 'bleh' }
+	})
+
 
 
 	return router

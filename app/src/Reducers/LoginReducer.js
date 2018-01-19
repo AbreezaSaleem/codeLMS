@@ -1,4 +1,4 @@
-import { USER_LOGGED_IN } from '../Actions/LoginActions'
+import { USER_LOGGED_IN, ACTIVE_USERNAME } from '../Actions/LoginActions'
 
 export const loggedIn = (state = false, action) => // state should NOT be false by default :(
 {
@@ -6,11 +6,27 @@ export const loggedIn = (state = false, action) => // state should NOT be false 
 	{
 		case USER_LOGGED_IN:
 			//return action.input;
-			//console.log('reducer activated!')
-			//console.log(action.input)
+			console.log('gonna add username!')
+			console.log(action.input)
 			return Object.assign({}, state, 
 			{
 				loggedIn: action.input
+			})
+		default:
+			return state;
+	}
+}
+
+export const currentUsername = (state = false, action) =>
+{
+	switch(action.type)
+	{
+		case ACTIVE_USERNAME:
+			console.log('action for username add')
+			console.log(action.username)
+			return Object.assign({}, state,
+			{
+				currentUsername: action.username
 			})
 		default:
 			return state;

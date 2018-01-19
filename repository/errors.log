@@ -1,4 +1,4 @@
-  File "test.py", line 1
-    import sys
-    ^
-IndentationError: unexpected indent
+Traceback (most recent call last):
+  File "test.py", line 1, in <module>
+    fdfdfd
+NameError: name 'fdfdfd' is not defined

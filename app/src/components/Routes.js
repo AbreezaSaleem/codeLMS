@@ -15,9 +15,10 @@ import CodeEditor from './ConsolePage'
 import TilesI from './instructor_side/Tiles'
 import CoursePage from './CoursePage'
 import CoursePageI from './instructor_side/CoursePage'
+import NewGradeComponent from './instructor_side/NewGradeComponent'
 import Roster from './instructor_side/Roster'
 import SignUp from './shared/SignUp1'
-import Console from './ConsolePage2'
+import Console from './ConsolePage'
 import Thumbnail from './ThumbNail'
 import R from './instructor_side/AssignmentEdit'
 
@@ -39,6 +40,7 @@ class Routes extends React.Component
 				<Route exact path = '/loginI' component = { LoginI } />
 				<Route exact path = '/loginI/instructor' component = { TilesI } />
 				<Route exact path = '/loginI/instructor/course' component = { CoursePageI } />
+				<Route exact path = '/loginI/instructor/course/new' component = { NewGradeComponent } />
 				<Route exact path = '/loginI/instructor/course/roster' component = { Roster } />
 			</Switch>
 		);

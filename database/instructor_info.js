@@ -24,5 +24,5 @@ module.exports.findUserbyId = function(id, callback)
 
 module.exports.getInstructorCourses = function(username)
 {
-	return instructor_info.findOne({email: username})
+	return instructor_info.findOne({name: username})
 }

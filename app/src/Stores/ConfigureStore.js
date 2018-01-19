@@ -11,6 +11,7 @@ const initialState =
 	dataFetched: {}, // miss
 	enrolledCourses: [],
 	activeCourse: '',
+	currentUsername: '',
 	userCode: ''
 }
 

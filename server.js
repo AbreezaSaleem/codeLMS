@@ -1,4 +1,6 @@
 // HAAALLOOOOOOO
+import http from 'http'
+import socketServer from 'socket.io'
 import Koa from 'koa'
 import session from 'koa-session'
 import Router from 'koa-router2'
@@ -15,6 +17,7 @@ import kue from 'kue'
 import studentRouter from './routes/student'
 import instructorRouter from './routes/instructor'
 import instructors_credentials from './database/instructors_credentials'
+import gitlabAC from './gitlab/account_creator'
 
 const app = new Koa();
 var queue = kue.createQueue()
@@ -29,19 +32,22 @@ app.use(bodyParser())
 app.use(passport.initialize())
 app.use(passport.session())
 
-mongoose.connect(db_url)
+var server = http.createServer(app.callback())
+var io = socketServer(server)
+
+mongoose.connect(db_url).then( () =>
+{
+	server.listen(8080, function() 
+	{
+		console.log('listening on 8080')
+	})
+}) 
 
 //studentRouter(app, passport)
 
-app.use(studentRouter(app, passport, queue).routes())
+app.use(studentRouter(io, app, passport, queue).routes())
 app.use(instructorRouter(app, passport).routes())
 app.use(basicRouter.routes())
-
-app.listen(8080, function() 
-{
-	console.log('listening on 8080')
-}) 
-
 
 queue.create('pls', 
 {

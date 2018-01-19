@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import Navbar from './Navbar'
 import Logo from './Logo'
 import history from '../history/History'
-import { registerInstructor } from '../../Actions/SignupActions'
+import { registerInstructor, registerStudent } from '../../Actions/SignupActions'
 
 class Signup extends React.Component
 {
@@ -64,7 +64,31 @@ class Signup extends React.Component
 			if(type == 'Instructor')
 			{
 				console.log('here!!')
-				this.props.instructorSignup({username: this.state.name, password: this.state.password})
+				this.props.instructorSignup(
+				{
+					username: this.state.email.substring(0, this.state.email.lastIndexOf('@')), 
+					password: this.state.password, 
+					email: this.state.email,
+					name: this.state.name
+				})
+				.then(response =>
+				{
+					history.push(
+					{
+						pathname: '/'
+					})	
+				})
+			}
+			else
+			{
+				console.log('student signing up~')
+				this.props.studentSignup(
+				{
+					username: this.state.email.substring(0, this.state.email.lastIndexOf('@')), 
+					password: this.state.password, 
+					email: this.state.email,
+					name: this.state.name
+				})
 				.then(response =>
 				{
 					history.push(
@@ -85,28 +109,6 @@ class Signup extends React.Component
 		}
 		event.preventDefault()
 	}
-
-	/*onSubmit(event) why tf have i not deleted this already
-	{
-		console.log('fucking here')
-		if (this.state.password != this.state.confirm_password)
-			this.setState({error_password: 'Passwords dont match.'})
-		if (this.state.name && this.state.email && this.state.password && this.state.confirm_password )
-		{	
-			console.log('GONNA UPDATE USER INFO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-			this.prop.userSignup({username: name, password: password})
-		}
-		else
-		{
-			this.setState(
-			{
-				error_password: 'Please fill all the required fields', 
-				error_username: 'Please fill all the required fields',
-				error_email: 'Please fill all the required fields'
-			})
-		}
-		event.preventDefault()
-	}*/
 
 	render()
 	{
@@ -198,12 +200,14 @@ class Signup extends React.Component
 
 Signup.propTypes = 
 {
-	instructorSignup: PropTypes.func.isRequired
+	instructorSignup: PropTypes.func.isRequired,
+	studentSignup: PropTypes.func.isRequired
 }
 
 const mapDispatchToProps = (dispatch) =>
 ({
-	instructorSignup: (x) => dispatch(registerInstructor(x))
+	instructorSignup: (x) => dispatch(registerInstructor(x)),
+	studentSignup: (x) => dispatch(registerStudent(x))
 });
 
 

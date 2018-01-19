@@ -3,6 +3,7 @@ import Center from 'react-center'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import isEmpty from 'lodash/isEmpty'
+import {connect} from 'react-redux'
 import { browserHistory } from 'react-router'
 import { Route, Redirect, Link } from 'react-router-dom'
 
@@ -11,7 +12,9 @@ import Routes from './Routes'
 import Tiles from './Tiles'
 import history from './history/History'
 
-export default class LoginForm extends React.Component
+import { activeUsername } from '../Actions/LoginActions'
+
+class LoginForm extends React.Component
 {
 	constructor()
 	{
@@ -47,6 +50,7 @@ export default class LoginForm extends React.Component
 			this.props.studentLoginRequest({username: this.state.username, password: this.state.password})
 			.then(response => /// ctx.body's data will be available HERE in reponse variable
 				{	
+					this.props.addUsername(this.state.username)
 					this.setState(
 					{
 						student: response.data.student, // response should be the list of courses student is enrollrd in
@@ -141,5 +145,15 @@ LoginForm.propTypes =
 {
 	studentLoginRequest: PropTypes.func.isRequired,
 	instructorLoginRequest: PropTypes.func.isRequired,
-	getCourses: PropTypes.func.isRequired
+	getCourses: PropTypes.func.isRequired,
+	addUsername: PropTypes.func.isRequired
 }
+
+
+const mapDispatchToProps = (dispatch) =>
+({
+	addUsername: (username) => dispatch(activeUsername(username))
+})
+
+
+export default connect(null, mapDispatchToProps) (LoginForm)

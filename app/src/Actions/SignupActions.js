@@ -12,6 +12,16 @@ export const registerInstructor = data =>
 	}
 }
 
+export const registerStudent = data =>
+{
+	return (dispatch) =>
+	{
+		console.log('here...')
+		console.log(data)
+		return axios.post('/signupS', data)
+	}
+}
+
 
 
 

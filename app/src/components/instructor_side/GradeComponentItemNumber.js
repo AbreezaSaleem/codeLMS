@@ -10,6 +10,7 @@ class GradeComponentItemNumber extends React.Component
 	{
 		super()
 		this.onClick = this.onClick.bind(this)
+		this.onNew = this.onNew.bind(this)
 	}
 
 	onClick(event)
@@ -17,6 +18,16 @@ class GradeComponentItemNumber extends React.Component
 		history.push(
 		{
 			pathname: '/loginI/instructor/course/roster',
+			state: { courseTitle: this.props.activeCourse }
+		})
+		event.preventDefault()
+	}
+
+	onNew(event)
+	{
+		history.push(
+		{
+			pathname: '/loginI/instructor/course/new',
 			state: { courseTitle: this.props.activeCourse }
 		})
 		event.preventDefault()
@@ -33,6 +44,7 @@ class GradeComponentItemNumber extends React.Component
 				</div>
 				<div class = 'pull-right'>
 					<div>
+						<button class = 'btn-custom' onClick = { this.onNew } > New </button>
 						<button class = 'btn-custom' onClick = { this.onClick } > Solution </button>
 						<button class = 'btn-custom btn-custom btn-hover'> Mean </button>
 						<button class = 'btn-custom hover'> Edit </button>

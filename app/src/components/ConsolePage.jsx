@@ -3,22 +3,28 @@ import Navbar from './shared/Navbar'
 import CodeEditorTextArea from './ReactAce'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
+import io from 'socket.io-client'
 
-import { sendCode } from '../Actions/ConsolePageActions'
+import { sendCodeToTheServer, uploadCodeToGitlab } from '../Actions/ConsolePageActions'
+
+let socket
 
 class CodeEditor extends React.Component 
 {   
 	constructor()
 	{
 		super()
+		socket=io.connect('http://localhost:8080')
+
 		this.state = 
 		{
+			codeOutput: 'wtf',
 			submitButtonClicked:false,
 			runButtonClicked:false 
 		}
 		this.submitButton = this.submitButton.bind(this)
 		this.runButton = this.runButton.bind(this)
-		
+		this.uploadButton = this.uploadButton.bind(this)
 	}
 
 	
@@ -31,8 +37,21 @@ class CodeEditor extends React.Component
 			submitButtonClicked:true
 		})
 		console.log('user code is')
-		console.log(this.props.userCode)
-		this.props.sendCodeToSever(this.props.userCode).then( (response) => console.log(response.data) )
+		console.log(this.props.state.userCode)
+		/*this.props.sendCodeToSever(this.props.userCode).then( response => 
+		{
+			console.log('here')
+			console.log( response.data.output )
+			this.setState({ codeOutput: response.data.output, errors: response.data.errors }) 
+		console.log('updated state')
+		console.log(this.state)
+		})*/
+		this.props.sendCode(socket, this.props.state.userCode)
+		socket.on('returnOutput', ret => 
+		{
+			console.log(ret.output)
+			console.log(ret.errors)
+		})
 	}
 
 	runButton(event)
@@ -43,9 +62,20 @@ class CodeEditor extends React.Component
 		{
 			runButtonClicked:true
 		})
-		this.props.sendCodeToSever(this.props.userCode).then( (response) => console.log(response.data) )
+		this.props.sendCodeToSever(this.props.userCode).then( response => this.setState({ codeOutput: response.data.effoff }) )
 
 		//this.props.sendCode(socket, "heyy");
+	}
+
+	uploadButton(event)
+	{
+		event.preventDefault()
+		// send code, username and dir name
+		let data = this.props.state
+		console.log('uploading')
+		console.log(data)
+		let courseCode = (( data.activeCourse.activeCourse).split('|'))[0]
+		this.props.uploadCode(socket, data.userCode.userCode, data.currentUsername.currentUsername, courseCode)
 	}
 
     render()
@@ -53,6 +83,7 @@ class CodeEditor extends React.Component
     	const sendCode  = this.props.sendCode
 	    return(
 	    	<div>
+	    		<input type='button' defaultValue='Upload code' onClick={ this.uploadButton }></input> 
 	    	 	<Navbar/>
 		     	<form>
 			      <fieldset>
@@ -82,6 +113,9 @@ class CodeEditor extends React.Component
 				          	<div class='row eq'>
 				           		<input type='button' defaultValue='Post' onClick={()=>{console.log('Post Clicked')}}></input>
 				          	</div>
+				          	<h1>
+				          		{this.state.codeOutput}
+				          	</h1>
 				        </div>       				                
 			        </div>
 			      </fieldset>
@@ -94,21 +128,24 @@ class CodeEditor extends React.Component
 
 CodeEditor.propTypes = 
 {
-	userCode: PropTypes.object.isRequired,
-	sendCodeToSever: PropTypes.func.isRequired
+	state: PropTypes.object.isRequired,
+	sendCode: PropTypes.func.isRequired,
+	uploadCode: PropTypes.func.isRequired
 }
 
 
 const mapDispatchToProps = (dispatch) =>
 ({
-	sendCodeToSever: (code) => dispatch(sendCode(code))
+	sendCode: (socket, code) => dispatch(sendCodeToTheServer(socket, code)),
+	uploadCode: (socket, code, name, dirname) => dispatch(uploadCodeToGitlab(socket, code, name, dirname))
 });
 
 
 
 function mapStateToProps(state)
 {
-	return { userCode: state.userCode }
+	console.log(state)
+	return {state} 		// TAKE ONLY THE THINGS U NEED >:(
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CodeEditor);

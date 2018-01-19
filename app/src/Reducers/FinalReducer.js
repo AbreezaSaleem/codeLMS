@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import { isLoading, errorOccured, dataFetched, loggedIn } from './LoginReducer'
+import { isLoading, errorOccured, dataFetched, loggedIn, currentUsername } from './LoginReducer'
 import { enrolledCourses, activeCourse } from './CoursesReducer'
 import { userCode } from './ConsolePageReducer'
 
@@ -11,5 +11,6 @@ export default combineReducers
 	dataFetched,	
 	enrolledCourses,
 	activeCourse,
-	userCode
+	userCode,
+	currentUsername
 });

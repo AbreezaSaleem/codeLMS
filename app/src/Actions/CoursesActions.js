@@ -30,3 +30,14 @@ export const getStudentsEnrolled = course =>
 		return axios.post('/loginI/instructor/course/roster', course)
 	}
 }
+
+export function createRepositories(courseName, studentsEnrolled)
+{
+	console.log('create repos!!!')
+	console.log(courseName)
+	console.log(studentsEnrolled)
+	return (dispatch) =>
+	{
+		return axios.post('/loginI/instructor/course/new', {course: courseName, students: studentsEnrolled})
+	}
+}

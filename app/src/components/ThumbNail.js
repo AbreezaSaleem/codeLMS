@@ -1,10 +1,13 @@
 import React from 'react'
 import { browserHistory } from 'react-router'
 import { Route, Redirect } from 'react-router-dom'
-
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import history from './history/History'
 
-export default class ThumbNail extends React.Component 
+import { addActiveCourse } from './../Actions/CoursesActions'
+
+class ThumbNail extends React.Component 
 {
 	constructor()
 	{
@@ -20,6 +23,8 @@ export default class ThumbNail extends React.Component
 
 	onClick(event)
 	{
+		console.log('gonna activate the course!')
+		this.props.activeCourse(this.props.CourseTitle)
 		let courseCode = ((this.props.CourseTitle).split('|'))[0];
 		let Semester=this.props.SemesterName;
 		console.log(Semester)
@@ -77,3 +82,15 @@ export default class ThumbNail extends React.Component
 }
 
 
+ThumbNail.propTypes = 
+{
+	activeCourse: PropTypes.func.isRequired
+}
+
+const mapDispatchToProps = (dispatch) =>
+({
+	activeCourse: (course) => dispatch(addActiveCourse(course))
+});
+
+
+export default connect(null, mapDispatchToProps)(ThumbNail)
