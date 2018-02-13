@@ -189,7 +189,7 @@ export default function(io, app, passport, queue)
 			{
 				console.log('done downloading')
 				// now modify the file
-				fs.writeFile('gitlab/temp/' + data.dirname + '/test.py', data.code, function(err) 
+				fs.writeFile('gitlab/temp/' + data.dirname + '/omg.py', data.code, function(err) 
 				{
 					if(err) return console.log(err);
 					console.log("The file was saved!");	

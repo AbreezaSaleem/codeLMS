@@ -22,7 +22,6 @@ var semester_courses = module.exports =  mongoose.model('semester_courses', seme
 
 module.exports.getSubComponentsNameForCoursePage = function(courseCode, SemesterName) 
 {	
-	let SemesterDocument=semester_courses.findOne({ SemesterName: SemesterName});
-	return semester_courses.findOne({ SemesterName: SemesterName});
+	return semester_courses.findOne({ SemesterName: SemesterName, Courses: { $elemMatch: {courseCode: courseCode} } });
 }
 

@@ -14,6 +14,7 @@ export default class CoursePage extends React.Component
 	}
 	render()
 	{	
+		console.log(this.props.location.state)
 		let CourseCode =this.props.location.state.CourseCode;
 		let CourseTitle = this.props.location.state.CourseTitle; 
 		let AssignmentTitles = this.props.location.state.SubComponents.CourseInfo.assignments;

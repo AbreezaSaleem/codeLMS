@@ -48,7 +48,7 @@ class NewGradeComponent extends React.Component
 				console.log('students enrolled are!!!')
 				console.log(this.state.studentsEnrolled)
 			})*/
-			this.setState( // uhhh u gotta do the spilliting here!
+			this.setState( // uhhh u gotta do the spilliting here! fak
 			{
 				studentsEnrolled: "18100115"  
 			})

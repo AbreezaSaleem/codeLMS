@@ -108,6 +108,8 @@ export default function(app, passport)
 
 	router.post('/loginI/instructor/course', async (ctx) =>
 	{
+		console.log(ctx.request.body.CourseCode)
+		console.log(ctx.request.body.SemesterName)
 		let SemesterDocument = await semester_courses.getSubComponentsNameForCoursePage(ctx.request.body.CourseCode, ctx.request.body.SemesterName)
 		let CourseArr=SemesterDocument.Courses;
 		let CourseInfo = CourseArr.filter(function(course){ return course.courseCode==ctx.request.body.CourseCode;})
@@ -138,7 +140,7 @@ export default function(app, passport)
 		{
 			console.log('done')
 		})*/
-		gradecomponent_creator(ctx.request.body.students, ctx.request.body.course)
+		gradecomponent_creator(ctx.request.body.students, ctx.request.body.course) // umm... so here, it sort of works for one student. not the whole freaking list
 		ctx.body = { studentList: 'studentList' }
 	})
 

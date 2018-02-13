@@ -1,3 +1,4 @@
+#!/bin/bash
 userName=$1
 workDir=$2
 
