@@ -1,0 +1,10 @@
+{
+	"python": {
+		"cmd": "python test.py 2> errors.log > output.txt",
+		"ext": "py"
+	},
+	"C++": {
+		"cmd": "g++ test.cpp 2> errors.log; ./a.out < input.txt > output.txt",
+		"ext": "cpp"
+	}
+}
